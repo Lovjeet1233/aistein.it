@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import LanguageSelector from "@/components/ui/LanguageSelector";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -316,6 +317,9 @@ export default function RootLayout({
         <div id="main-content">
           {children}
         </div>
+        
+        {/* Floating Language Selector */}
+        <LanguageSelector />
       </body>
     </html>
   );
