@@ -26,7 +26,6 @@ const HeroSection: React.FC = () => {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ playbackRate: 0.7 }}
           onLoadedMetadata={(e) => {
             const video = e.target as HTMLVideoElement;
             video.playbackRate = 0.7;
