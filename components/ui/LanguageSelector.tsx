@@ -1,25 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Globe, X } from "lucide-react";
+import { Globe, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 interface Language {
   code: string;
   name: string;
+  displayName: string;
   flag: string;
 }
 
 const languages: Language[] = [
-  { code: "ar", name: "Arabic", flag: "🇸🇦" },
-  { code: "zh-CN", name: "Chinese (Simplified)", flag: "🇨🇳" },
-  { code: "fr", name: "French", flag: "🇫🇷" },
-  { code: "de", name: "German", flag: "🇩🇪" },
-  { code: "it", name: "Italian", flag: "🇮🇹" },
-  { code: "es", name: "Spanish", flag: "🇪🇸" },
-  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "en", name: "English", displayName: "EN", flag: "🇬🇧" },
+  { code: "ar", name: "Arabic", displayName: "AR", flag: "🇸🇦" },
+  { code: "zh-CN", name: "Chinese (Simplified)", displayName: "中文", flag: "🇨🇳" },
+  { code: "fr", name: "French", displayName: "FR", flag: "🇫🇷" },
+  { code: "de", name: "German", displayName: "DE", flag: "🇩🇪" },
+  { code: "it", name: "Italian", displayName: "IT", flag: "🇮🇹" },
+  { code: "es", name: "Spanish", displayName: "ES", flag: "🇪🇸" },
 ];
 
 declare global {
@@ -43,7 +43,7 @@ declare global {
 
 const LanguageSelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[6]); // Default: English
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]); // Default: English
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -100,126 +100,103 @@ const LanguageSelector: React.FC = () => {
       {/* Hidden Google Translate Element */}
       <div id="google_translate_element" className="hidden" />
 
-      {/* Floating Language Button - Bottom Left */}
+      {/* Compact Language Selector - Bottom Left */}
       <div className="fixed bottom-6 left-6 z-50">
-        <motion.button
-          onClick={() => setIsOpen(true)}
-          className={cn(
-            "flex items-center justify-center w-14 h-14 rounded-full",
-            "bg-white border-2 border-gray-300 shadow-lg",
-            "hover:shadow-xl hover:scale-110 transition-all duration-300",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          )}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Select language"
-        >
-          <Globe className="w-6 h-6 text-gray-700" />
-        </motion.button>
-      </div>
-
-      {/* Language Selection Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
+        <AnimatePresence>
+          {isOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
-              onClick={() => setIsOpen(false)}
-            />
-
-            {/* Modal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] w-full max-w-md"
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="absolute bottom-16 left-0 mb-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
             >
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden mx-4">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex items-center justify-between">
-                  <h3 className="text-white font-semibold text-lg">
-                    Select Language
-                  </h3>
+              {/* Language List */}
+              <div className="max-h-[400px] overflow-y-auto">
+                {languages.map((language, index) => (
                   <button
-                    onClick={() => setIsOpen(false)}
-                    className="text-white hover:bg-white/20 rounded-lg p-1 transition-colors"
+                    key={language.code}
+                    onClick={() => handleLanguageChange(language)}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-4 py-3",
+                      "hover:bg-blue-50 transition-colors duration-150",
+                      "border-b border-gray-100 last:border-b-0",
+                      selectedLanguage.code === language.code && "bg-blue-50"
+                    )}
                   >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
+                    {/* Flag */}
+                    <span className="text-2xl">{language.flag}</span>
 
-                {/* Language List */}
-                <div className="max-h-[500px] overflow-y-auto">
-                  {languages.map((language, index) => (
-                    <motion.button
-                      key={language.code}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      onClick={() => handleLanguageChange(language)}
+                    {/* Language Name */}
+                    <span
                       className={cn(
-                        "w-full flex items-center gap-4 px-6 py-4",
-                        "hover:bg-gray-50 transition-all duration-200",
-                        "border-b border-gray-100 last:border-b-0",
-                        selectedLanguage.code === language.code &&
-                          "bg-blue-50 hover:bg-blue-100"
+                        "text-sm font-medium flex-1 text-left",
+                        selectedLanguage.code === language.code
+                          ? "text-blue-600"
+                          : "text-gray-700"
                       )}
                     >
-                      {/* Flag */}
-                      <span className="text-3xl">{language.flag}</span>
+                      {language.name}
+                    </span>
 
-                      {/* Language Name */}
-                      <span
-                        className={cn(
-                          "text-base font-medium flex-1 text-left",
-                          selectedLanguage.code === language.code
-                            ? "text-blue-600"
-                            : "text-gray-800"
-                        )}
+                    {/* Checkmark */}
+                    {selectedLanguage.code === language.code && (
+                      <svg
+                        className="w-4 h-4 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        {language.name}
-                      </span>
-
-                      {/* Selected Indicator */}
-                      {selectedLanguage.code === language.code && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center"
-                        >
-                          <svg
-                            className="w-4 h-4 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={3}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </motion.div>
-                      )}
-                    </motion.button>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                  <p className="text-xs text-gray-500 text-center">
-                    Powered by Google Translate
-                  </p>
-                </div>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2.5}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                ))}
               </div>
             </motion.div>
-          </>
+          )}
+        </AnimatePresence>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2.5 rounded-lg",
+            "bg-white border border-gray-300 shadow-lg",
+            "hover:shadow-xl hover:border-gray-400 transition-all duration-200",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+            isOpen && "shadow-xl border-blue-500"
+          )}
+          aria-label="Select language"
+        >
+          <Globe className="w-5 h-5 text-gray-600" />
+          <span className="text-sm font-medium text-gray-700">
+            {selectedLanguage.displayName}
+          </span>
+          <ChevronDown
+            className={cn(
+              "w-4 h-4 text-gray-500 transition-transform duration-200",
+              isOpen && "rotate-180"
+            )}
+          />
+        </button>
+      </div>
+
+      {/* Backdrop for closing dropdown */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40"
+            onClick={() => setIsOpen(false)}
+          />
         )}
       </AnimatePresence>
 
@@ -235,7 +212,7 @@ const LanguageSelector: React.FC = () => {
           top: 0 !important;
         }
         #google_translate_element {
-          display: none;
+          display: none !important;
         }
         .skiptranslate {
           display: none !important;
