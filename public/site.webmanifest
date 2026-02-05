@@ -1,0 +1,22 @@
+{
+  "name": "AiStein.it - AI Voice & Chat Assistants",
+  "short_name": "AiStein",
+  "description": "Complete AI assistant platform for inbound/outbound calls, customer service automation, and seamless integrations",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0066FF",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
